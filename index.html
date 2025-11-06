@@ -24,3 +24,18 @@
     main { padding:12px 12px 24px; margin:0 auto; max-width:640px; }
   </style>
 </head>
+<body>
+  <main>
+    <h1>护肤记录</h1>
+    <p>这里记录每日护肤产品及皮肤状态。</p>
+  </main>
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/skincare-app/sw.js')
+      .then(() => console.log('Service Worker 注册成功'))
+      .catch(console.error);
+  }
+  </script>
+</body>
+</html>
