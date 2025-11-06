@@ -1,165 +1,26 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>护肤记录</title>
+  <title>护肤记录</title>
 
-<meta name="theme-color" content="#2e7d32">
-<link rel="manifest" href="/skincare-app/manifest.webmanifest">
-<link rel="icon" href="/skincare-app/icons/icon-192.png">
-<link rel="apple-touch-icon" href="/skincare-app/icons/icon-192.png">
   <meta name="theme-color" content="#2e7d32">
-  <link rel="icon" href="/icons/icon-192.png">
-  <style>:root{--line:#e5e7eb;--accent:#2e7d32;--muted:#666}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-html,body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Noto Sans SC,Arial;background:#fff;color:#111}
-a{text-decoration:none;color:inherit}
-.hide{display:none}
-header{background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:10}
-.ver{margin-left:auto;font-size:12px;color:#2e7d32;background:#e9f5ec;border:1px solid #cfe9d6;padding:4px 8px;border-radius:999px}
-.tabs{display:flex;gap:8px;overflow:auto;padding:8px 12px;background:#fff;position:sticky;top:52px;z-index:9;border-bottom:1px solid var(--line)}
-.tab{padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;white-space:nowrap}
-.tab.active{background:var(--accent);color:#fff;border-color:#2e7d32}
-main{padding:12px 12px 24px;max-width:960px;margin:0 auto}
-.card{border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0;background:#fff}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
-input[type=date],input[type=text],textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:14px;background:#fff}
-textarea{min-height:92px;resize:vertical}
-.btn{display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#f9fafb;font-size:13px}
-.btn.primary{background:#2e7d32;color:#fff;border-color:#2e7d32}
-.btn.ghost{background:#fff}
-.list .item{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
-.badge{background:#f3f4f6;border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:12px;margin-right:6px}
-.muted{color:#666;font-size:12px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:12px;opacity:0;transition:opacity .2s ease;z-index:9999}
-.seg{display:flex;gap:0;border:1px solid var(--line);border-radius:999px;overflow:hidden;width:100%;background:#fff}
-.seg a{flex:1;padding:12px 0;text-align:center}
-.seg .on{background:#2e7d32;color:#fff}
-.seg .off{color:#2b3a2d}
-.grid2{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
-ol.rank{margin:0;padding-left:18px}
-ol.rank li{margin:6px 0}
-img.preview{width:84px;height:84px;object-fit:cover;border-radius:12px;border:1px solid var(--line);margin-right:6px}
-summary{cursor:pointer;list-style:none}
-summary::-webkit-details-marker{display:none}
-.item-head{display:flex;justify-content:space-between;align-items:center}
-.kv{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-.kv .badge{margin-bottom:4px}</style>
+  <link rel="manifest" href="/skincare-app/manifest.webmanifest">
+  <link rel="icon" href="/skincare-app/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/skincare-app/icons/icon-192.png">
+
+  <style>
+    :root { --line:#e5e7eb; --bg:#f9fafb; --accent:#2e7d32; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { margin:0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); }
+    a { text-decoration:none; color:inherit; }
+    .hide { display:none; }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:10px 16px; display:flex; align-items:center; }
+    .ver { margin-left:auto; font-size:12px; color:#666; }
+    .tabs { display:flex; gap:8px; overflow-x:auto; }
+    .tab { padding:12px 16px; border-radius:8px; cursor:pointer; }
+    .tab.active { background:var(--accent); color:#fff; }
+    main { padding:12px 12px 24px; margin:0 auto; max-width:640px; }
+  </style>
 </head>
-<body>
-<header>
-  <h1>护肤记录</h1>
-  <span class="ver">v3.2.1-final</span>
-</header>
-
-<div class="tabs">
-  <a class="tab active" data-tab="log" href="#tab=log">记录</a>
-  <a class="tab" data-tab="stats" href="#tab=stats">统计</a>
-  <a class="tab" data-tab="products" href="#tab=products">产品库</a>
-  <a class="tab" data-tab="history" href="#tab=history">历史</a>
-</div>
-
-<main>
-  <section id="log" class="">
-    <div class="card">
-      <div class="row">
-        <div>
-          <label>日期</label>
-          <input id="date" type="date"/>
-        </div>
-        <div>
-          <label>早/晚</label>
-          <div class="seg" role="tablist" aria-label="早晚切换">
-            <a id="amBtn" class="on" href="#am=1">早（AM）</a>
-            <a id="pmBtn" class="off" href="#am=0">晚（PM）</a>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:12px;">
-        <label>使用产品</label>
-        <div id="productChips" class="chips"></div>
-      </div>
-      <div class="row" style="margin-top:12px;">
-        <div>
-          <label>使用感受</label>
-          <div id="feelChips" class="chips"></div>
-        </div>
-        <div>
-          <label>皮肤状态</label>
-          <div id="stateChips" class="chips"></div>
-        </div>
-      </div>
-      <div style="margin-top:12px;">
-        <label>备注</label>
-        <textarea id="notes" placeholder="例如：今天偏干，某精华轻微刺痛…"></textarea>
-      </div>
-      <div style="margin-top:12px;">
-        <label>照片（最多3张）</label>
-        <input id="photos" type="file" accept="image/*" multiple />
-        <div id="previews" class="chips" style="margin-top:8px;"></div>
-        <div class="muted">照片仅保存在本地。</div>
-      </div>
-      <div style="margin-top:12px;">
-        <a id="saveLog" class="btn primary" style="width:100%;text-align:center" href="#save=1">保存今日记录</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="stats" class="hide">
-    <div class="card">
-      <div class="grid2">
-        <h3>面膜使用次数</h3>
-        <span id="maskCount" class="badge">0 次</span>
-      </div>
-      <div class="muted">依据“面膜”分类统计（全部时间）。</div>
-    </div>
-    <div class="card">
-      <h3>近30天·产品使用TOP10</h3>
-      <ol id="topUsage" class="rank"></ol>
-      <div class="muted">统计最近 30 天记录；若产品被删除，名称显示为“(已删除)”。</div>
-    </div>
-  </section>
-
-  <section id="products" class="hide">
-    <div class="card">
-      <h3>新增产品</h3>
-      <div class="row">
-        <div>
-          <label>名称</label>
-          <input id="pname" type="text" placeholder="例如：××修护精华" autocomplete="off"/>
-        </div>
-        <div>
-          <label>类别</label>
-          <select id="pcat">
-            <option>洗面奶</option><option>爽肤水/化妆水</option><option>精华</option><option>乳液</option>
-            <option>面霜</option><option>眼霜</option><option>防晒</option><option>面膜</option><option>油/膏体</option><option>其他</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-top:8px;"><a id="addProduct" class="btn primary" style="width:100%;text-align:center" href="#add=1">添加到产品库</a></div>
-    </div>
-    <div class="card">
-      <h3>产品库</h3>
-      <div id="plist" class="list"></div>
-    </div>
-  </section>
-
-  <section id="history" class="hide">
-    <div class="card">
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-bottom:8px;">
-        <a class="btn ghost" href="#export=csv">导出CSV</a>
-        <a class="btn" href="#clear=all">清空全部</a>
-      </div>
-      <div id="hlist" class="list"></div>
-      <div class="muted">（如需长期保存，建议定期导出 CSV 备份）</div>
-    </div>
-  </section>
-</main>
-
-<div id="toast" class="toast">操作成功</div>
-
-<script src="/app.js" defer></script>
-</body>
-</html>
