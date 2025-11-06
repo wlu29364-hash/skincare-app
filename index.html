@@ -2,40 +2,51 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>护肤记录</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>护肤记录 · v7</title>
 
-  <link rel="manifest" href="/skincare-app/manifest.webmanifest?v=4" />
-  <link rel="icon" href="/skincare-app/icon-192.png?v=4" />
-  <link rel="apple-touch-icon" href="/skincare-app/icon-192.png?v=4" />
+  <!-- 你的仓库发布在 /skincare-app 子路径下，所以所有静态资源都带这个前缀 -->
+  <link rel="manifest" href="/skincare-app/manifest.webmanifest?v=7">
+  <link rel="icon" href="/skincare-app/icon-192.png?v=7">
+  <link rel="apple-touch-icon" href="/skincare-app/icon-192.png?v=7">
   <meta name="theme-color" content="#2e7d32" />
 
   <style>
     :root { --line:#e5e7eb; --bg:#f9fafb; --accent:#2e7d32; }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body { margin:0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); }
-    a { text-decoration:none; color:inherit; }
-    .hide { display:none; }
-    header { background:#fff; border-bottom:1px solid var(--line); padding:10px 16px; display:flex; align-items:center; }
-    .ver { margin-left:auto; font-size:12px; color:#666; }
-    .tabs { display:flex; gap:8px; overflow-x:auto; }
-    .tab { padding:12px 16px; border-radius:8px; cursor:pointer; }
-    .tab.active { background:var(--accent); color:#fff; }
-    main { padding:12px 12px 24px; margin:0 auto; max-width:640px; }
+    html,body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:#111; }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:12px 16px; }
+    main { max-width:720px; margin:0 auto; padding:16px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .ok { display:inline-block; padding:4px 8px; background:var(--accent); color:#fff; border-radius:999px; font-size:12px; }
   </style>
 </head>
 <body>
+  <header>
+    <strong>护肤记录</strong> <span class="ok">在线</span>
+  </header>
+
   <main>
-    <h1>护肤记录</h1>
-    <p>这里记录每日护肤产品及皮肤状态。</p>
+    <div class="card">
+      <p>如果你能看到这段文字，说明页面已正确加载（v7）。</p>
+      <ul>
+        <li>Manifest：<code>/skincare-app/manifest.webmanifest</code></li>
+        <li>图标：<code>/skincare-app/icon-192.png</code> / <code>icon-512.png</code></li>
+        <li>SW：<code>/skincare-app/sw.js</code></li>
+      </ul>
+    </div>
   </main>
 
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/skincare-app/sw.js')
-      .then(() => console.log('Service Worker 注册成功'))
-      .catch(console.error);
-  }
+    // 立刻能看见是否执行到这里
+    console.log('Page JS loaded v7');
+
+    // 注册 Service Worker（作用域必须指向子路径）
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/skincare-app/sw.js', { scope: '/skincare-app/' })
+        .then(r => console.log('SW ok', r.scope))
+        .catch(e => console.log('SW fail', e));
+    }
   </script>
 </body>
 </html>
