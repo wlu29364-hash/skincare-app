@@ -1,16 +1,21 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
-  "display": "standalone",
   "name": "护肤记录",
-  "orientation": "any",
-  "scope": "/skincare-app/",
-  "short_name": "护肤记录",
-  "start_url": "/skincare-app/",
+  "short_name": "护肤",
+  "description": "记录每日护肤产品及皮肤状态",
+  "start_url": "/skincare-app/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
   "theme_color": "#2e7d32",
-  "description": "记录每日产品以及护肤状态",
   "icons": [
-    { "src": "/skincare-app/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/skincare-app/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "/skincare-app/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/skincare-app/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
