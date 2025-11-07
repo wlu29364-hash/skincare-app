@@ -2,13 +2,13 @@
   "id": "./",
   "name": "护肤记录",
   "short_name": "护肤记录",
-  "description": "记录每日护肤产品与肤况，支持离线与本地保存。",
-  "start_url": "./",
+  "description": "记录每日护肤产品与肤况，支持离线保存和本地统计。",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#2e7d32",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
@@ -23,9 +23,5 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": [
-    "health",
-    "beauty",
-    "lifestyle"
-  ]
+  "categories": ["health", "beauty", "lifestyle"]
 }
