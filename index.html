@@ -1,134 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <base href="/skincare-app/">
-  <meta name="theme-color" content="#2e7d32" />
-  <title>护肤记录 v3.2.2</title>
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./icon-192.png" sizes="192x192" />
-  <link rel="apple-touch-icon" href="./icon-512.png" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>护肤记录</title>
+
+  <!-- 全部相对路径，适配 GitHub Pages 项目路径 -->
+  <link rel="manifest" href="./manifest.webmanifest?v=8"/>
+  <link rel="icon" href="./icon-192.png"/>
+  <link rel="apple-touch-icon" href="./icon-192.png"/>
+  <meta name="theme-color" content="#2e7d32"/>
+
   <style>
-    body {
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fafafa;
-      color: #333;
+    :root{--bg:#f7f7f7;--card:#fff;--line:#e5e7eb;--accent:#2e7d32;}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    header{position:sticky;top:0;background:#1b5e20;color:#fff;padding:12px 16px;z-index:10}
+    h1{margin:0;font-size:22px}
+    .badge{background:#2e7d32;color:#eaffea;border-radius:16px;padding:2px 10px;margin-left:8px;font-size:12px}
+    nav.tabs{display:flex;gap:12px;padding:12px 16px;background:#1b5e20;position:sticky;top:56px;z-index:9}
+    .tab{border:1px solid #a5d6a7;background:#fff;color:#1b5e20;border-radius:20px;padding:8px 16px;font-weight:600}
+    .tab.active{background:#2e7d32;color:#fff;border-color:#2e7d32}
+    main{padding:12px;max-width:720px;margin:0 auto}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+    .row{display:flex;gap:12px}
+    .row>div{flex:1}
+    label{display:block;font-size:13px;color:#444;margin-bottom:6px}
+    input[type="text"],input[type="date"],textarea,select{
+      width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;font-size:15px
     }
-    header {
-      background: #2e7d32;
-      color: white;
-      padding: 16px;
-      text-align: center;
-    }
-    h1 { margin: 0; font-size: 1.6em; }
-    .badge {
-      background: #c8e6c9;
-      color: #2e7d32;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      margin-left: 8px;
-    }
-    nav.tabs {
-      display: flex;
-      justify-content: space-around;
-      background: white;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .tab {
-      border: none;
-      background: none;
-      font-size: 1em;
-      padding: 8px 12px;
-      border-radius: 24px;
-    }
-    .tab_active {
-      background: #2e7d32;
-      color: white;
-    }
-    main {
-      padding: 12px;
-    }
-    .card {
-      background: white;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      margin-bottom: 12px;
-    }
-    label {
-      display: block;
-      margin-bottom: 4px;
-      font-weight: bold;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1em;
-      box-sizing: border-box;
-    }
-    .seg {
-      display: flex;
-      margin: 8px 0;
-    }
-    .seg button {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #2e7d32;
-      background: white;
-      color: #2e7d32;
-      font-size: 1em;
-      border-radius: 0;
-    }
-    .seg button.active {
-      background: #2e7d32;
-      color: white;
-    }
-    .actions { padding-top: 12px; }
-    .btn {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      padding: 10px 14px;
-      border-radius: 6px;
-      font-size: 1em;
-      cursor: pointer;
-      border: none;
-    }
-    .btn.primary {
-      background: #2e7d32;
-      color: white;
-    }
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      transform: translateX(-50%);
-      background: #323232;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 6px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .toast.show { opacity: 1; }
+    textarea{min-height:96px;resize:vertical}
+    .seg{display:flex;border:1px solid #d1d5db;border-radius:10px;overflow:hidden}
+    .seg button{flex:1;padding:10px 8px;background:#fff;border:0}
+    .seg button.active{background:#2e7d32;color:#fff}
+    .actions{padding-top:12px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:12px 16px;border:1px solid #2e7d32;font-weight:700}
+    .btn.primary{background:#2e7d32;color:#fff}
+    .hide{display:none}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#323232;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s}
+    .toast.show{opacity:1}
   </style>
 </head>
 <body>
   <header>
-    <h1>护肤记录</h1>
-    <span class="badge" id="version">v3.2.2</span>
+    <h1>护肤记录 <span class="badge" id="ver">v3.2.3</span></h1>
   </header>
 
-  <!-- 顶部四个分页 -->
   <nav class="tabs" id="tabs">
-    <button class="tab tab_active" data-tab="record">记录</button>
+    <button class="tab active" data-tab="log">记录</button>
     <button class="tab" data-tab="stats">统计</button>
     <button class="tab" data-tab="products">产品库</button>
     <button class="tab" data-tab="history">历史</button>
@@ -136,43 +55,57 @@
 
   <main>
     <!-- 记录页 -->
-    <section id="record" class="card">
+    <section id="log" class="card">
       <div class="row">
-        <label for="date">日期</label>
-        <input id="date" type="date" />
-      </div>
-
-      <div class="row" style="margin-top:8px;">
-        <label>早/晚</label>
-        <div class="seg">
-          <button id="amBtn" class="active">早 (AM)</button>
-          <button id="pmBtn">晚 (PM)</button>
+        <div>
+          <label for="date">日期</label>
+          <input id="date" type="date"/>
         </div>
       </div>
 
-      <div class="row">
-        <label for="product">使用产品</label>
-        <input id="product" type="text" placeholder="例如：洁面、精华、面霜…" />
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label>早/晚</label>
+          <div class="seg" id="seg-time">
+            <button type="button" class="active" data-val="AM">早 (AM)</button>
+            <button type="button" data-val="PM">晚 (PM)</button>
+          </div>
+        </div>
       </div>
 
-      <div class="row">
-        <label for="feeling">使用感受</label>
-        <input id="feeling" type="text" placeholder="清爽/滋润/有刺痛/成膜感强…" />
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="productsInput">使用产品</label>
+          <input id="productsInput" type="text" placeholder="例如：洁面、精华、面霜…"/>
+        </div>
       </div>
 
-      <div class="row">
-        <label for="skin">皮肤状态</label>
-        <input id="skin" type="text" placeholder="偏干/出油/T区暗沉/泛红…" />
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="feeling">使用感受</label>
+          <input id="feeling" type="text" placeholder="清爽/滋润/有刺痛/成膜感强…"/>
+        </div>
       </div>
 
-      <div class="row">
-        <label for="note">备注</label>
-        <textarea id="note" placeholder="例如：今天偏干，某精华轻微刺痛…"></textarea>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="skin">皮肤状态</label>
+          <input id="skin" type="text" placeholder="偏干/出油/T区暗沉/泛红…"/>
+        </div>
       </div>
 
-      <div class="row">
-        <label for="photos">照片（最多3张，仅本地）</label>
-        <input id="photos" type="file" accept="image/*" multiple />
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="note">备注</label>
+          <textarea id="note" placeholder="例如：今天偏干，某精华轻微刺痛…"></textarea>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="photos">照片（最多3张，仅本地）</label>
+          <input id="photos" type="file" accept="image/*" multiple />
+        </div>
       </div>
 
       <div class="actions">
@@ -180,28 +113,25 @@
       </div>
     </section>
 
-    <!-- 统计、产品库、历史 -->
-    <section id="stats" class="card hide"></section>
-    <section id="products" class="card hide"></section>
-    <section id="history" class="card hide"></section>
+    <!-- 统计 / 产品库 / 历史：先占位 -->
+    <section id="stats" class="card hide"><h3>统计</h3><div id="statsContent">（后续补充）</div></section>
+    <section id="products" class="card hide"><h3>产品库</h3><div id="plist">（后续补充）</div></section>
+    <section id="history" class="card hide"><h3>历史</h3><div id="hlist">（后续补充）</div></section>
   </main>
 
   <div id="toast" class="toast">已保存！</div>
 
-  <!-- 引入脚本 -->
-  <script defer src="./app.js?v=21"></script>
+  <!-- 先加载业务脚本，再注册 SW。版本号每次改动+1，避免旧缓存 -->
+  <script defer src="./app.js?v=23"></script>
   <script>
     (function () {
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
-          navigator.serviceWorker
-            .register('/skincare-app/sw.js', { scope: '/skincare-app/' })
-            .catch(function (e) {
-              console.log('SW register failed:', e);
-            });
-        });
+          navigator.serviceWorker.register('./sw.js')
+            .catch(function (e) { console.log('SW 注册失败', e); });
+        }, { passive: true });
       }
     })();
-    </script>
+  </script>
 </body>
 </html>
