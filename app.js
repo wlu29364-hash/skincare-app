@@ -1,210 +1,215 @@
-(function () {
-  // 工具
-  const $  = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-  const toast = (msg='已保存！') => {
-    const t = $('#toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 1600);
-  };
+// skincare-app / app.js
+// 本地存储键
+const STORAGE_KEY = 'skincare_logs_v1';
 
-  // Tab 切换
-  function bindTabs() {
-    const tabs = $$('#tabs .tab');
-    const sections = ['log','stats','products','history'].map(id => ({id, el: $('#'+id)}));
-    tabs.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.tab;
-        tabs.forEach(b => b.classList.toggle('active', b===btn));
-        sections.forEach(s => s.el.classList.toggle('hide', s.id !== target));
-        // 让页面可点击（无遮罩）
-        document.activeElement && document.activeElement.blur?.();
-      }, { passive: true });
-    });
+// ================= 工具函数 =================
+
+function loadLogs() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    console.error('loadLogs error', e);
+    return [];
   }
-
-  // 早/晚切换
-  function bindAMPM() {
-    const seg = $('#seg-time');
-    const btns = $$('button', seg);
-    seg.addEventListener('click', (ev) => {
-      const b = ev.target.closest('button');
-      if (!b) return;
-      btns.forEach(x => x.classList.toggle('active', x === b));
-      seg.dataset.value = b.dataset.val;
-    }, { passive: true });
-  }
-
-  // 保存（示例：存入 localStorage）
-  function bindSave() {
-    const saveBtn = $('#saveBtn');
-    saveBtn.addEventListener('click', () => {
-      const data = {
-        date: $('#date').value,
-        tp  : $('#seg-time').dataset.value || 'AM',
-        products: $('#productsInput').value.trim(),
-        feeling : $('#feeling').value.trim(),
-        skin    : $('#skin').value.trim(),
-        note    : $('#note').value.trim(),
-        ts: Date.now()
-      };
-      const key = 'skincare-logs';
-      const list = JSON.parse(localStorage.getItem(key) || '[]');
-      list.unshift(data);
-      localStorage.setItem(key, JSON.stringify(list));
-      toast('保存成功');
-    });
-  }
-
-  // 初始化日期默认今天
-  function initDate() {
-    const d = $('#date');
-    if (!d.value) {
-      const now = new Date();
-      const pad = n => (n<10?'0':'') + n;
-      d.value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
-    }
-  }
-
-  // DOM 就绪
-  document.addEventListener('DOMContentLoaded', () => {
-    bindTabs();
-    bindAMPM();
-    bindSave();
-    initDate();
-  }, { passive: true });
-})();
-// ===== 工具函数 =====
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => Array.from(document.querySelectorAll(s));
-function getLogs() {
-  try { return JSON.parse(localStorage.getItem('logs') || '[]'); } catch { return []; }
-}
-function getProductsDB() {
-  try { return JSON.parse(localStorage.getItem('products') || '{}'); } catch { return {}; }
-}
-function setProductsDB(db) {
-  localStorage.setItem('products', JSON.stringify(db));
 }
 
-// ===== 统计页 =====
-function renderStats() {
-  const box = $('#statBox');
-  if (!box) return;
-  const logs = getLogs();
-  if (!logs.length) {
-    box.innerHTML = '<p>还没有任何记录。</p>';
+function saveLogs(logs) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+  } catch (e) {
+    console.error('saveLogs error', e);
+  }
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  if (!toast) {
+    alert(msg);
     return;
   }
-  // 近30天次数统计（按产品名聚合）
-  const now = Date.now();
-  const d30 = now - 30 * 24 * 60 * 60 * 1000;
-  const counter = {};
-  logs.forEach(l => {
-    const t = new Date(l.date).getTime() || 0;
-    if (t >= d30) {
-      (l.products || []).forEach(name => {
-        counter[name] = (counter[name] || 0) + 1;
-      });
-    }
-  });
-  const items = Object.entries(counter).sort((a,b)=>b[1]-a[1]);
-  if (!items.length) {
-    box.innerHTML = '<p>近30天还没有可统计的数据。</p>';
-    return;
-  }
-  box.innerHTML = `
-    <p style="margin:.25rem 0 .5rem 0;color:#666;">近30天使用次数（按多到少）：</p>
-    <ol style="margin:.25rem 0 .5rem 1.25rem;">
-      ${items.map(([k,v])=>`<li>${k}：<b>${v}</b> 次</li>`).join('')}
-    </ol>
-  `;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1600);
 }
 
-// ===== 产品库页 =====
-function renderProducts() {
-  const list = $('#plist');
-  if (!list) return;
-  const db = getProductsDB();
-  const names = Object.keys(db);
-  if (!names.length) {
-    list.innerHTML = '<li style="color:#666;">暂无产品。你可以在上面输入框添加，或在记录页输入后自动收集。</li>';
-    return;
-  }
-  list.innerHTML = names
-    .sort((a,b)=>a.localeCompare(b))
-    .map(n => `<li>${n}${db[n] ? ` <small style="color:#666;">(${db[n]})</small>` : ''}</li>`)
-    .join('');
+// ================= 初始化 DOM 引用 =================
+
+// 表单字段
+const dateInput = document.getElementById('date');
+const amBtn = document.getElementById('amBtn');
+const pmBtn = document.getElementById('pmBtn');
+const productsInput = document.getElementById('products');
+const feelingInput = document.getElementById('feeling');
+const skinInput = document.getElementById('skin');
+const noteInput = document.getElementById('note');
+const photosInput = document.getElementById('photos'); // 目前仅本地，不入库
+const saveBtn = document.getElementById('saveBtn');
+
+// 区块
+const statsSection = document.getElementById('stats');
+const productsSection = document.getElementById('products');
+const historySection = document.getElementById('history');
+
+// 记录页容器（尽量兼容几种写法：有哪个用哪个）
+const logSection =
+  document.getElementById('logForm') ||
+  document.getElementById('log') ||
+  document.querySelector('[data-section="log"]') ||
+  null;
+
+// 版本角标（可选）
+const versionBadge = document.getElementById('version');
+if (versionBadge) {
+  versionBadge.textContent = 'v3.2.3';
 }
 
-// 可选：在产品库页点“添加”按钮，写入本地库
-function bindAddProduct() {
-  const btn = $('#addP');
-  if (!btn) return;
-  btn.onclick = () => {
-    const name = ($('#pname')?.value || '').trim();
-    const cate = ($('#pcate')?.value || '').trim();
-    if (!name) return alert('请输入产品名称');
-    const db = getProductsDB();
-    db[name] = cate;
-    setProductsDB(db);
-    renderProducts();
-    $('#pname').value = '';
-    $('#pcate').value = '';
-  };
-}
+// Tab 按钮（上面四个）
+const tabButtons = document.querySelectorAll('#tabs .tab');
 
-// ===== 历史页 =====
-function renderHistory() {
-  const box = $('#hlist');
-  if (!box) return;
-  const logs = getLogs();
-  if (!logs.length) {
-    box.innerHTML = '<p>暂无历史记录。</p>';
-    return;
-  }
-  // 展示最近 30 条
-  const rows = logs.slice(-30).reverse().map(l => {
-    const when = `${l.date || ''} ${l.am ? '早' : '晚'}`;
-    const pro = (l.products || []).join('、') || '-';
-    const feel = l.feeling || '';
-    const skin = l.skin || '';
-    return `
-      <div style="padding:.5rem 0;border-bottom:1px solid #eee;">
-        <div style="font-weight:600;">${when}</div>
-        <div>产品：${pro}</div>
-        ${feel ? `<div>感受：${feel}</div>` : ''}
-        ${skin ? `<div>皮肤：${skin}</div>` : ''}
-      </div>
-    `;
-  }).join('');
-  box.innerHTML = rows;
-}
-
-// ===== Tab 切换时触发渲染（与你现有 showTab 合并即可） =====
-function showTab(id) {
-  // 隐藏所有 section
-  $$('#main > section.card, section.card').forEach(s => s.classList.add('hide'));
-  // 激活目标
-  const target = document.getElementById(id);
-  if (target) target.classList.remove('hide');
-  // 顶部按钮样式（如果你有 .tab）
-  $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset?.tab === id));
-
-  // 渲染对应页面
-  if (id === 'stats') renderStats();
-  if (id === 'products') { renderProducts(); bindAddProduct(); }
-  if (id === 'history') renderHistory();
-
-  // 记住最后一个 Tab（可选）
-  try { localStorage.setItem('lastTab', id); } catch {}
-}
-
-// 首次进入时，默认展示记录页；如果你之前在 DOMContentLoaded 里已经调用 showTab('log') 就不用重复
-document.addEventListener('DOMContentLoaded', () => {
-  // 保底：如果没有 hash 且没有你自己调用 showTab，就显示 log
-  if (!location.hash) {
-    showTab('log');
+// 给没有 data-tab 的按钮按顺序补一个
+const TAB_IDS = ['log', 'stats', 'products', 'history'];
+tabButtons.forEach((btn, i) => {
+  if (!btn.dataset.tab) {
+    btn.dataset.tab = TAB_IDS[i] || 'log';
   }
 });
+
+// ================= 记录页：早/晚 =================
+
+let currentPeriod = 'AM';
+
+function setPeriod(p) {
+  currentPeriod = p;
+  if (amBtn && pmBtn) {
+    if (p === 'AM') {
+      amBtn.classList.add('active');
+      pmBtn.classList.remove('active');
+    } else {
+      pmBtn.classList.add('active');
+      amBtn.classList.remove('active');
+    }
+  }
+}
+
+if (amBtn && pmBtn) {
+  amBtn.addEventListener('click', () => setPeriod('AM'));
+  pmBtn.addEventListener('click', () => setPeriod('PM'));
+}
+
+// 默认日期 = 今天
+function initDate() {
+  if (!dateInput) return;
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  dateInput.value = `${d.getFullYear()}-${m}-${day}`;
+}
+
+// ================= 保存记录 =================
+
+function handleSave() {
+  if (!dateInput) return;
+
+  const date = (dateInput.value || '').trim();
+  if (!date) {
+    showToast('请先选择日期');
+    return;
+  }
+
+  const products = (productsInput && productsInput.value || '').trim();
+  const feeling = (feelingInput && feelingInput.value || '').trim();
+  const skin = (skinInput && skinInput.value || '').trim();
+  const note = (noteInput && noteInput.value || '').trim();
+
+  const logs = loadLogs();
+
+  // 同一天同一时段唯一一条，用 key 标识
+  const key = `${date}_${currentPeriod}`;
+  const idx = logs.findIndex(l => l.key === key);
+
+  const item = {
+    key,
+    date,
+    period: currentPeriod,
+    products,
+    feeling,
+    skin,
+    note,
+    ts: Date.now()
+  };
+
+  if (idx >= 0) {
+    logs[idx] = item;
+  } else {
+    logs.push(item);
+  }
+
+  saveLogs(logs);
+  showToast('已保存');
+
+  renderHistory();
+  renderProducts();
+  renderStats();
+}
+
+if (saveBtn) {
+  saveBtn.addEventListener('click', handleSave);
+}
+
+// ================= Tab 切换 =================
+
+function showTab(id) {
+  // 按钮高亮
+  tabButtons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === id);
+  });
+
+  // 区块显隐
+  if (logSection) {
+    logSection.classList.toggle('hide', id !== 'log');
+  }
+
+  if (statsSection) {
+    statsSection.classList.toggle('hide', id !== 'stats');
+  }
+  if (productsSection) {
+    productsSection.classList.toggle('hide', id !== 'products');
+  }
+  if (historySection) {
+    historySection.classList.toggle('hide', id !== 'history');
+  }
+
+  // 渲染对应内容
+  if (id === 'stats') renderStats();
+  if (id === 'products') renderProducts();
+  if (id === 'history') renderHistory();
+
+  // 记住最后一个 tab
+  try {
+    localStorage.setItem('lastTab', id);
+  } catch (e) {}
+}
+
+// 绑定点击
+tabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.tab || 'log';
+    showTab(id);
+  });
+});
+
+// ================= 渲染：统计 =================
+
+function renderStats() {
+  if (!statsSection) return;
+
