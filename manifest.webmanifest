@@ -1,0 +1,20 @@
+{
+  "name": "护肤记录",
+  "short_name": "护肤记录",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5faf5",
+  "theme_color": "#8BC48A",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
