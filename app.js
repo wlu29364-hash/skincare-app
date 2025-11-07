@@ -200,3 +200,14 @@ document.addEventListener('DOMContentLoaded', function(){
 }, false);
 
 })();
+<script>
+  (function () {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function (e) {
+          console.log('SW register error', e);
+        });
+      });
+    }
+  })();
+</script>
