@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>护肤记录</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon-192.png">
+  <meta name="theme-color" content="#8bc18b">
+  <style>
+    :root{
+      --bg:#f4faf4;
+      --card:#ffffff;
+      --primary:#8bc18b;
+      --primary-soft:#d5f0d5;
+      --primary-text:#184018;
+      --muted:#7a8b7a;
+      --radius-xl:26px;
+      --radius-lg:18px;
+      --radius-md:999px;
+      --shadow-soft:0 10px 35px rgba(0,0,0,0.06);
+      --shadow-card:0 14px 40px rgba(0,0,0,0.08);
+      --transition-fast:0.18s ease-out;
+      --font:"-apple-system", BlinkMacSystemFont, system-ui, -system-ui, sans-serif;
+    }
+    *{box-sizing:border-box;}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--primary-text);
+      -webkit-font-smoothing:antialiased;
+    }
+    body{
+      padding-bottom:40px;
+    }
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:linear-gradient(to bottom,#8bc18b,#a7d3a7);
+      color:#fff;
+      padding:18px 18px 12px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.12);
+      border-radius:0 0 26px 26px;
+    }
+    .title-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+    }
+    h1{
+      margin:0;
+      font-size:26px;
+      letter-spacing:1px;
+    }
+    .badge{
+      padding:4px 11px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.16);
+      font-size:12px;
+    }
+    nav.tabs{
+      margin-top:14px;
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      padding-bottom:4px;
+    }
+    nav.tabs button{
+      flex:0 0 auto;
+      padding:9px 22px;
+      font-size:16px;
+      border-radius:var(--radius-md);
+      border:none;
+      background:rgba(255,255,255,0.15);
+      color:#e9f7e9;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:none;
+      transition:all var(--transition-fast);
+      white-space:nowrap;
+    }
+    nav.tabs button.active{
+      background:#fff;
+      color:var(--primary-text);
+      box-shadow:var(--shadow-soft);
+      transform:translateY(1px);
+    }
+    main{
+      padding:16px 14px 20px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow-card);
+      padding:18px 16px 18px;
+      margin-bottom:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:20px;
+    }
+    .field-label{
+      font-size:14px;
+      color:var(--muted);
+      margin:14px 4px 4px;
+    }
+    select,input[type="text"],textarea{
+      width:100%;
+      padding:10px 11px;
+      border-radius:14px;
+      border:1px solid #dde8dd;
+      font-size:15px;
+      outline:none;
+      background:#f8fbf8;
+      transition:border var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+    select:focus,input[type="text"]:focus,textarea:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 2px rgba(139,193,139,0.18);
+      background:#ffffff;
+    }
+    textarea{
+      resize:vertical;
+      min-height:70px;
+    }
+    .seg{
+      display:flex;
+      background:#e9f4e9;
+      padding:4px;
+      border-radius:var(--radius-md);
+      gap:4px;
+      margin-top:6px;
+    }
+    .seg button{
+      flex:1;
+      padding:9px 4px;
+      border-radius:var(--radius-md);
+      border:none;
+      background:transparent;
+      color:var(--primary-text);
+      font-size:15px;
+      transition:all var(--transition-fast);
+    }
+    .seg button.active{
+      background:#8bc18b;
+      color:#fff;
+      box-shadow:var(--shadow-soft);
+    }
+    .chip-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:6px;
+    }
+    .chip{
+      padding:6px 14px;
+      border-radius:var(--radius-md);
+      background:#f0f6f0;
+      color:var(--muted);
+      font-size:14px;
+      border:1px solid transparent;
+      transition:all var(--transition-fast);
+    }
+    .chip.active{
+      background:#8bc18b;
+      color:#fff;
+      border-color:#8bc18b;
+      box-shadow:var(--shadow-soft);
+    }
+    .actions{
+      margin-top:18px;
+      display:flex;
+      justify-content:flex-end;
+    }
+    .btn{
+      padding:11px 22px;
+      border-radius:var(--radius-md);
+      border:none;
+      font-size:16px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      transition:all var(--transition-fast);
+      white-space:nowrap;
+    }
+    .btn.primary{
+      background:#8bc18b;
+      color:#fff;
+      box-shadow:var(--shadow-soft);
+    }
+    .btn.primary:active{
+      transform:scale(0.97);
+      box-shadow:none;
+    }
+    .btn.ghost{
+      background:transparent;
+      color:var(--muted);
+    }
+    .history-item{
+      padding:14px 12px 12px;
+      border-radius:18px;
+      background:#f5faf5;
+      margin-bottom:10px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .history-main{
+      flex:1;
+      font-size:14px;
+      color:#304530;
+    }
+    .history-title{
+      font-weight:600;
+      margin-bottom:4px;
+    }
+    .history-sub{
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .history-actions{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .btn-sm{
+      padding:5px 10px;
+      font-size:12px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      background:#ffebe8;
+      color:#b94a3a;
+    }
+    .stats-line{
+      padding:10px 12px;
+      border-radius:16px;
+      background:#f5faf5;
+      margin-top:6px;
+      font-size:14px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .stats-filter{
+      display:flex;
+      gap:8px;
+      margin:6px 0 4px;
+      flex-wrap:wrap;
+    }
+    .stats-filter button{
+      padding:4px 11px;
+      border-radius:999px;
+      border:none;
+      font-size:12px;
+      background:#edf6ed;
+      color:var(--muted);
+    }
+    .stats-filter button.active{
+      background:#8bc18b;
+      color:#fff;
+    }
+    .note{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      background:#2f5932;
+      color:#fff;
+      padding:9px 18px;
+      border-radius:999px;
+      font-size:14px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.2s ease-out, transform 0.2s ease-out;
+      z-index:40;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translate(-50%,0);
+      pointer-events:auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-row">
+      <h1>护肤记录</h1>
+      <div class="badge" id="version">v3.2.7</div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="log" class="active">记录</button>
+      <button data-tab="stats">统计</button>
+      <button data-tab="products">产品库</button>
+      <button data-tab="history">历史</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="log" class="card">
+      <h2>今日记录</h2>
+      <div class="field-label">日期</div>
+      <select id="dateSelect"></select>
+
+      <div class="field-label">早/晚</div>
+      <div class="seg">
+        <button id="amBtn" class="active" data-time="am">早 (AM)</button>
+        <button id="pmBtn" data-time="pm">晚 (PM)</button>
+      </div>
+
+      <div class="field-label">使用产品</div>
+      <select id="productInput"></select>
+
+      <div class="field-label">使用感受</div>
+      <div class="chip-group" id="feelChips">
+        <div class="chip" data-value="清爽">清爽</div>
+        <div class="chip" data-value="滋润">滋润</div>
+        <div class="chip" data-value="有刺痛">有刺痛</div>
+        <div class="chip" data-value="成膜感强">成膜感强</div>
+        <div class="chip" data-value="黏腻">黏腻</div>
+        <div class="chip" data-value="闷痘">闷痘</div>
+        <div class="chip" data-value="其他">其他</div>
+      </div>
+
+      <div class="field-label">皮肤状态</div>
+      <div class="chip-group" id="skinChips">
+        <div class="chip" data-value="正常">正常</div>
+        <div class="chip" data-value="偏干">偏干</div>
+        <div class="chip" data-value="出油">出油</div>
+        <div class="chip" data-value="T区暗沉">T区暗沉</div>
+        <div class="chip" data-value="泛红">泛红</div>
+        <div class="chip" data-value="痘痘">痘痘</div>
+        <div class="chip" data-value="稳定">稳定</div>
+      </div>
+
+      <div class="field-label">备注</div>
+      <textarea id="note" placeholder="例如：今天偏干，晚上加了面膜..."></textarea>
+
+      <div class="field-label">照片（最多3张，仅本地）</div>
+      <input id="photos" type="file" accept="image/*" multiple />
+
+      <div class="note">选中的照片不会上传，只保存在你的设备和浏览器中。</div>
+
+      <div class="actions">
+        <button id="saveBtn" class="btn primary">保存今日记录</button>
+      </div>
+    </section>
+
+    <section id="stats" class="card" style="display:none;">
+      <h2>统计</h2>
+      <div class="stats-filter">
+        <button data-range="30" class="active">近30天</button>
+        <button data-range="7">本周</button>
+        <button data-range="31">本月</button>
+      </div>
+      <div id="statsSummary" class="note"></div>
+      <div id="statsList"></div>
+    </section>
+
+    <section id="products" class="card" style="display:none;">
+      <h2>产品库</h2>
+      <div class="field-label">产品名</div>
+      <input id="pname" type="text" placeholder="如：精华 / 面霜 / 面膜" />
+
+      <div class="field-label">使用时段</div>
+      <select id="puse">
+        <option value="all">早晚皆可</option>
+        <option value="am">早用</option>
+        <option value="pm">晚用</option>
+      </select>
+
+      <div class="field-label">产品类型（可选）</div>
+      <select id="ptype">
+        <option value="">不区分</option>
+        <option value="洁面">洁面</option>
+        <option value="爽肤水">爽肤水</option>
+        <option value="精华">精华</option>
+        <option value="乳液">乳液</option>
+        <option value="面霜">面霜</option>
+        <option value="面膜">面膜</option>
+        <option value="防晒">防晒</option>
+        <option value="其他">其他</option>
+      </select>
+
+      <div class="actions">
+        <button id="addProductBtn" class="btn primary">添加到产品库</button>
+      </div>
+
+      <ul id="productList" style="list-style:none;padding-left:0;margin-top:14px;"></ul>
+
+      <div class="note">产品库保存在本地，可在记录页下拉选择。</div>
+    </section>
+
+    <section id="history" class="card" style="display:none;">
+      <h2>历史记录</h2>
+      <div id="historyList"></div>
+      <div class="note">长按或使用删除按钮，可移除错误记录。</div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script defer src="./app.js"></script>
+  <script>
+    // register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js').catch(function(e){
+          console.log('SW failed', e);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
