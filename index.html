@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>护肤记录</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#8BC48A">
+  <style>
+    :root {
+      --bg:#f5faf5;
+      --header:#8BC48A;
+      --header-light:#a7d7a4;
+      --accent:#4a7c59;
+      --accent-soft:#e4f3e4;
+      --border:#d5e8d4;
+      --text:#13321f;
+      --muted:#6b8f72;
+      --radius-xl:26px;
+      --radius-lg:20px;
+      --radius-md:16px;
+      --shadow-soft:0 8px 24px rgba(0,0,0,0.06);
+      --transition-fast:0.18s ease-out;
+      --font-cn:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:0;
+      font-family:var(--font-cn);
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+    }
+    header{
+      background:var(--header);
+      color:#fff;
+      padding:18px 18px 10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+      border-radius:0 0 var(--radius-xl) var(--radius-xl);
+    }
+    .title{
+      font-size:26px;
+      font-weight:700;
+      letter-spacing:2px;
+    }
+    .version{
+      font-size:13px;
+      padding:3px 10px;
+      margin-left:8px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.22);
+      display:inline-block;
+      vertical-align:middle;
+    }
+    nav.tabs{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:14px;
+      padding:0 4px 6px;
+    }
+    .tab-btn{
+      flex:1;
+      padding:10px 0;
+      border-radius:999px;
+      border:none;
+      background:rgba(255,255,255,0.22);
+      color:#edf7ed;
+      font-size:15px;
+      font-weight:500;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:all var(--transition-fast);
+      backdrop-filter:blur(4px);
+    }
+    .tab-btn.active{
+      background:#fff;
+      color:var(--accent);
+      box-shadow:var(--shadow-soft);
+    }
+    main{
+      padding:18px 14px 26px;
+      max-width:720px;
+      margin:0 auto;
+    }
+    .card{
+      background:#fff;
+      border-radius:var(--radius-xl);
+      padding:18px 16px 18px;
+      box-shadow:var(--shadow-soft);
+    }
+    .section-title{
+      font-size:22px;
+      font-weight:600;
+      margin:0 0 14px;
+      color:var(--accent);
+    }
+    label{
+      display:block;
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    select,input[type="text"],textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:var(--radius-lg);
+      border:1px solid var(--border);
+      font-size:15px;
+      outline:none;
+      background:#fff;
+      transition:border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+    select:focus,input[type="text"]:focus,textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 2px rgba(74,124,89,0.12);
+    }
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .seg{
+      display:inline-flex;
+      padding:4px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      gap:4px;
+    }
+    .seg button{
+      border:none;
+      padding:8px 18px;
+      border-radius:999px;
+      background:transparent;
+      color:var(--muted);
+      font-size:14px;
+      transition:all var(--transition-fast);
+    }
+    .seg button.active{
+      background:#fff;
+      color:var(--accent);
+      box-shadow:var(--shadow-soft);
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .chip{
+      padding:7px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:13px;
+      color:var(--muted);
+      background:#fff;
+      cursor:pointer;
+      transition:all var(--transition-fast);
+    }
+    .chip.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+      box-shadow:var(--shadow-soft);
+    }
+    .btn-primary{
+      width:100%;
+      margin-top:14px;
+      padding:12px 16px;
+      border-radius:999px;
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      font-size:16px;
+      font-weight:600;
+      box-shadow:var(--shadow-soft);
+      cursor:pointer;
+      transition:all var(--transition-fast);
+    }
+    .btn-primary:active{
+      transform:scale(.97);
+      box-shadow:0 4px 12px rgba(0,0,0,0.16);
+    }
+    .hide{display:none;}
+    /* 产品库 */
+    .products-list{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .pitem{
+      padding:10px 12px;
+      border-radius:var(--radius-md);
+      background:var(--accent-soft);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:14px;
+      color:var(--accent);
+    }
+    .pitem span.sub{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .btn-text{
+      border:none;
+      background:transparent;
+      color:#d9534f;
+      font-size:13px;
+      padding:4px 8px;
+      cursor:pointer;
+    }
+    /* 历史 */
+    .history-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .hitem{
+      padding:12px 12px 10px;
+      border-radius:var(--radius-lg);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      font-size:13px;
+      color:var(--text);
+    }
+    .hitem-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:6px;
+      font-weight:500;
+      color:var(--accent);
+    }
+    .hmeta{
+      color:var(--muted);
+      margin-bottom:3px;
+    }
+    .hitem .btn-text{
+      padding:0;
+      margin-left:8px;
+      font-size:12px;
+    }
+    /* 统计 */
+    .filter-bar{
+      display:flex;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .filter-btn{
+      flex:0 0 auto;
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:13px;
+      color:var(--muted);
+      cursor:pointer;
+      transition:all var(--transition-fast);
+    }
+    .filter-btn.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+      box-shadow:var(--shadow-soft);
+    }
+    .stat-sub{
+      font-size:13px;
+      color:var(--muted);
+      margin:0 0 8px;
+    }
+    .stat-block{
+      margin-top:8px;
+    }
+    .stat-title{
+      font-weight:600;
+      margin-bottom:4px;
+      color:var(--accent);
+    }
+    .stat-list{
+      font-size:14px;
+      padding-left:18px;
+      color:var(--text);
+    }
+    .stat-list li{
+      margin:3px 0;
+    }
+    footer{
+      max-width:720px;
+      margin:0 auto;
+      padding:6px 16px 18px;
+      font-size:11px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="title">护肤记录<span class="version">v3.3.0</span></div>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="log">记录</button>
+    <button class="tab-btn" data-tab="stats">统计</button>
+    <button class="tab-btn" data-tab="products">产品库</button>
+    <button class="tab-btn" data-tab="history">历史</button>
+  </nav>
+</header>
+<main>
+  <!-- 记录 -->
+  <section id="log" class="card">
+    <h2 class="section-title">记录</h2>
+    <div class="row">
+      <div style="flex:1">
+        <label>日期</label>
+        <select id="dateSelect"></select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="seg" id="timeSeg">
+        <button data-time="am" class="active">早 (AM)</button>
+        <button data-time="pm">晚 (PM)</button>
+      </div>
+    </div>
+    <div class="row">
+      <div style="flex:1">
+        <label>使用产品</label>
+        <input id="productInput" type="text" placeholder="可输入或点击选择，多个用、隔开">
+        <div id="productSuggest" class="chips"></div>
+      </div>
+    </div>
+    <div>
+      <label>使用感受</label>
+      <div id="feelingChips" class="chips"></div>
+    </div>
+    <div>
+      <label>皮肤状态</label>
+      <div id="skinChips" class="chips"></div>
+    </div>
+    <div>
+      <label>备注</label>
+      <textarea id="noteInput" placeholder="例如：今晚偏干，加了一片面膜..."></textarea>
+    </div>
+    <button id="saveBtn" class="btn-primary">保存今日记录</button>
+  </section>
+
+  <!-- 统计 -->
+  <section id="stats" class="card hide">
+    <h2 class="section-title">统计</h2>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-range="30">近30天</button>
+      <button class="filter-btn" data-range="week">本周</button>
+      <button class="filter-btn" data-range="month">本月</button>
+    </div>
+    <p id="statSummary" class="stat-sub"></p>
+    <div class="stat-block">
+      <div class="stat-title">按产品统计</div>
+      <ul id="statByProduct" class="stat-list"></ul>
+    </div>
+    <div class="stat-block">
+      <div class="stat-title">按产品类型统计</div>
+      <ul id="statByType" class="stat-list"></ul>
+    </div>
+  </section>
+
+  <!-- 产品库 -->
+  <section id="products" class="card hide">
+    <h2 class="section-title">产品库</h2>
+    <div class="row">
+      <div style="flex:1">
+        <label>产品名</label>
+        <input id="pnameInput" type="text" placeholder="如：精华 / 面霜 / 面膜">
+      </div>
+    </div>
+    <div class="row">
+      <div style="flex:1">
+        <label>产品类型</label>
+        <select id="ptypeSelect">
+          <option value="精华">精华</option>
+          <option value="洁面">洁面</option>
+          <option value="爽肤水">爽肤水</option>
+          <option value="面霜">面霜</option>
+          <option value="防晒">防晒</option>
+          <option value="面膜">面膜</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label>使用时段</label>
+        <select id="puseSelect">
+          <option value="all">早晚皆可</option>
+          <option value="am">早用</option>
+          <option value="pm">晚用</option>
+        </select>
+      </div>
+    </div>
+    <button id="addProductBtn" class="btn-primary">添加到产品库</button>
+    <div id="productList" class="products-list"></div>
+  </section>
+
+  <!-- 历史 -->
+  <section id="history" class="card hide">
+    <h2 class="section-title">历史记录</h2>
+    <div id="historyList" class="history-list"></div>
+  </section>
+</main>
+<footer>
+  所有数据仅存储在本地浏览器中。如更换设备或清理浏览器数据，记录会丢失。
+</footer>
+
+<script src="./app.js?v=330" defer></script>
+</body>
+</html>
