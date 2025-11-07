@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>护肤记录</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#2e7d32">
+  <style>
+    body { font-family: Arial; background: #f7f7f7; margin: 0; }
+    header { background: #2e7d32; color: #fff; text-align: center; padding: 10px 0; }
+    nav.tabs { display: flex; justify-content: space-around; background: #f0f0f0; padding: 10px 0; }
+    nav.tabs button { border: none; background: white; border-radius: 12px; padding: 8px 16px; font-size: 16px; }
+    nav.tabs button.active { background: #2e7d32; color: white; }
+    section.card { padding: 15px; }
+    .hide { display: none; }
+    .btn.primary { background: #2e7d32; color: white; border: none; border-radius: 8px; padding: 10px 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>护肤记录</h1>
+    <span class="badge" id="version">v3.2.4</span>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="log">记录</button>
+    <button class="tab" data-tab="stats">统计</button>
+    <button class="tab" data-tab="products">产品库</button>
+    <button class="tab" data-tab="history">历史</button>
+  </nav>
+
+  <main>
+    <section id="log" class="card">
+      <label>日期</label><input id="date" type="date"><br>
+      <div>
+        <button id="amBtn" class="active">早 (AM)</button>
+        <button id="pmBtn">晚 (PM)</button>
+      </div>
+      <input id="products" placeholder="使用产品">
+      <input id="feeling" placeholder="使用感受">
+      <input id="skin" placeholder="皮肤状态">
+      <textarea id="note" placeholder="备注"></textarea>
+      <button id="saveBtn" class="btn primary">保存今日记录</button>
+    </section>
+
+    <section id="stats" class="card hide">
+      <h2>统计</h2>
+      <p>(后续补充)</p>
+    </section>
+
+    <section id="products" class="card hide">
+      <h2>产品库</h2>
+      <div class="row" style="margin-top:12px;">
+        <div style="flex:1 1 70%;">
+          <input id="pname" type="text" placeholder="产品名，如：精华 / 面霜" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+        </div>
+        <div style="flex:1 1 30%; margin-left:8px;">
+          <select id="puse" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+            <option value="all">早晚皆可</option>
+            <option value="am">早用</option>
+            <option value="pm">晚用</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px;">
+        <button id="addProductBtn" class="btn primary">添加到产品库</button>
+      </div>
+      <ul id="productList" class="list" style="margin-top:10px; padding-left:0;"></ul>
+    </section>
+
+    <section id="history" class="card hide">
+      <h2>历史记录</h2>
+      <p>(后续补充)</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script defer src="./app.js?v=24"></script>
+</body>
+</html>
