@@ -44,6 +44,19 @@
     .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#111827; color:#fff; padding:10px 14px; border-radius:10px; font-size:14px; opacity:0; pointer-events:none; transition:.25s; }
     .toast.show { opacity:1; }
   </style>
+  <!-- 放在 index.html 最底部，</body> 之前 -->
+<script defer src="./app.js?v=15"></script>
+<script>
+  (function () {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker
+          .register('./sw.js')
+          .catch(function (e) { console.log('SW register failed:', e); });
+      });
+    }
+  })();
+</script>
 </head>
 <body>
   <header>
