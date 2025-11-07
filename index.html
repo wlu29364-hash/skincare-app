@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>护肤记录</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="theme-color" content="#7fb77e">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="app-header">
+  <h1>护肤记录</h1>
+  <span class="badge" id="version">v3.2.5</span>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="log">记录</button>
+  <button class="tab" data-tab="stats">统计</button>
+  <button class="tab" data-tab="products">产品库</button>
+  <button class="tab" data-tab="history">历史</button>
+</nav>
+
+<main>
+  <!-- 记录页 -->
+  <section id="log" class="card">
+    <div class="row">
+      <label for="date">日期</label>
+      <input id="date" type="date">
+    </div>
+
+    <div class="row">
+      <label>早/晚</label>
+      <div class="seg">
+        <button type="button" class="seg-btn active" data-time="am">早 (AM)</button>
+        <button type="button" class="seg-btn" data-time="pm">晚 (PM)</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="productsInput">使用产品</label>
+      <input id="productsInput" type="text" placeholder="可输入或从产品库选择，多个用、隔开" list="productOptions">
+      <datalist id="productOptions"></datalist>
+    </div>
+
+    <div class="row">
+      <label for="feeling">使用感受</label>
+      <input id="feeling" type="text" placeholder="清爽/滋润/有刺痛/成膜感强...">
+    </div>
+
+    <div class="row">
+      <label for="skin">皮肤状态</label>
+      <input id="skin" type="text" placeholder="偏干/出油/T区暗沉/泛红...">
+    </div>
+
+    <div class="row">
+      <label for="note">备注</label>
+      <textarea id="note" rows="3" placeholder="例如：今天偏干，晚间加了面膜..."></textarea>
+    </div>
+
+    <div class="row">
+      <label for="photos">照片（最多3张，仅本地）</label>
+      <input id="photos" type="file" accept="image/*" multiple>
+      <p class="hint">选中的照片不会上传，仅保存在你的设备中。</p>
+    </div>
+
+    <div class="actions">
+      <button id="saveBtn" class="btn primary">保存今日记录</button>
+    </div>
+  </section>
+
+  <!-- 统计页 -->
+  <section id="stats" class="card hide">
+    <h2>统计</h2>
+    <div id="statsContent">
+      <p>最近 30 天记录天数：<span id="stat-days">0</span></p>
+      <p>总记录条数：<span id="stat-total">0</span></p>
+      <p>最常用产品 TOP3：</p>
+      <ul id="stat-top-products"></ul>
+    </div>
+  </section>
+
+  <!-- 产品库 -->
+  <section id="products" class="card hide">
+    <h2>产品库</h2>
+    <div class="row">
+      <input id="pname" type="text" placeholder="产品名，如：精华 / 面霜 / 面膜">
+    </div>
+    <div class="row">
+      <select id="puse">
+        <option value="all">早晚皆可</option>
+        <option value="am">早用</option>
+        <option value="pm">晚用</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button id="addProductBtn" class="btn">添加到产品库</button>
+    </div>
+    <ul id="productList" class="list"></ul>
+  </section>
+
+  <!-- 历史记录 -->
+  <section id="history" class="card hide">
+    <h2>历史记录</h2>
+    <ul id="historyList" class="list"></ul>
+  </section>
+</main>
+
+<footer class="footer-note">
+  <p>所有数据仅保存在本地浏览器中。如更换设备或清理浏览器数据，记录会丢失。</p>
+</footer>
+
+<div id="toast" class="toast hide"></div>
+
+<script src="./app.js" defer></script>
+</body>
+</html>
