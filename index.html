@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>护肤记录 v3.2.9</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+nav.tabs{display:flex;justify-content:space-between;gap:12px;padding:16px 20px;background:#82c28a;}
+nav.tabs .tab-btn{flex:1;padding:10px 0;border-radius:999px;border:none;background:rgba(255,255,255,0.35);color:#2f5f3a;font-size:16px;font-weight:500;}
+nav.tabs .tab-btn.tab_active{background:#fff;color:#2f5f3a;}
+.card{background:#fff;margin:20px;border-radius:20px;padding:20px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+.list li{background:#f5faf5;margin:8px 0;padding:8px 12px;border-radius:12px;}
+.hide{display:none;}
+</style>
+</head>
+<body>
+<header style="background:#82c28a;color:#fff;text-align:center;padding:12px 0;font-size:22px;font-weight:600;">护肤记录 <span style="font-size:12px;">v3.2.9</span></header>
+<nav class="tabs">
+  <button class="tab-btn tab_active" data-tab="log">记录</button>
+  <button class="tab-btn" data-tab="stats">统计</button>
+  <button class="tab-btn" data-tab="products">产品库</button>
+  <button class="tab-btn" data-tab="history">历史</button>
+</nav>
+<main>
+  <section id="stats" class="card">
+    <h2>统计</h2>
+    <div class="stats-mode">
+      <button data-stats-mode="30d" class="pill_active">近30天</button>
+      <button data-stats-mode="week">本周</button>
+      <button data-stats-mode="month">本月</button>
+    </div>
+    <p id="statsSummary">加载中...</p>
+    <h3>按产品统计</h3>
+    <ul id="statsByProduct" class="list"></ul>
+    <h3>按产品类型统计</h3>
+    <ul id="statsByType" class="list"></ul>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
