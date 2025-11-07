@@ -194,7 +194,7 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
           navigator.serviceWorker
-            .register('./sw.js')
+            .register('/skincare-app/sw.js', { scope: '/skincare-app/' })
             .catch(function (e) {
               console.log('SW register failed:', e);
             });
